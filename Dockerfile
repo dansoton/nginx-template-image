@@ -1,14 +1,17 @@
 FROM nginx
 
-ADD bin/ /usr/sbin/
-ADD static/ /usr/share/nginx/html/
+ADD bin/    /usr/local/share/nginx-templated/bin/
+ADD static/ /usr/local/share/nginx-templated/html/
 
-RUN apt-get update &&\
-  apt-get upgrade  && \
-  apt-get autoremove -y && \
-  apt-get autoclean -y && \
-  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* &&\
-  configure-nginx.sh
+RUN apt-get -y update        \
+    && apt-get -y upgrade    \
+    && apt-get -y autoremove \
+    && apt-get -y autoclean  \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+env PATH $PATH:/usr/local/share/nginx-templated/bin
+
+RUN configure-nginx.sh
 
 VOLUME ["/etc/nginx/sites-templates"]
 WORKDIR /etc/nginx
